@@ -36,7 +36,7 @@ class Spaceship(GameObject):
     ACCELERATION = 0.25
     BULLET_SPEED = 100
 
-    def __init__(self, position, bullet_callback=None, ship="space_ship_40x40"):
+    def __init__(self, position, bullet_callback=None, ship=None):
         self.bullet_callback = bullet_callback
         self.laser_sound = load_sound("laser")
         self.image = ship
@@ -85,12 +85,12 @@ class Spaceship(GameObject):
 
 class NPC(Spaceship):
     def __init__(
-        self,
-        position,
-        bullet_callback,
-        ship="space_ship5_40x40",
-        targets=[],
-        other_npcs=None,
+            self,
+            position,
+            bullet_callback,
+            ship="space_ship5_40x40",
+            targets=[],
+            other_npcs=None,
     ):
         self.targets = targets
         self.acceleration = 0.10
