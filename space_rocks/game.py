@@ -1,8 +1,9 @@
 import pygame
 
 from models import Asteroid, Spaceship, NPC
-from Scores import Scores
-from utils import get_random_position, load_sprite, print_text
+from user import User
+from utils import get_random_position, load_sprite, print_text, print_healthcheck1, print_healthcheck2, \
+    print_healthcheck3
 
 import pygame
 import math
@@ -29,21 +30,35 @@ class SpaceRocks:
         self.font = pygame.font.Font(None, 64)
         self.message = ""
 
+        self.message_healthcheck1 = ""
+        self.message_healthcheck2 = ""
+        self.message_healthcheck3 = ""
+
         self.asteroids = []
         self.bullets = []
+        self.users = []
+
+        self.user1 = User()
+        self.user2 = User()
+        self.user3 = User()
+        self.user1.addPlayer(1, "scott")
+        self.user2.addPlayer(2, "miller")
+        self.user3.addPlayer(3, "nickolas")
+
+        self.users.append(self.user1)
+        self.users.append(self.user2)
+        self.users.append(self.user3)
         self.spaceship_one = Spaceship(
-            (self.width // 2, self.height // 2), self.bullets.append, "space_ship_40x40"
+            (self.width // 2, self.height // 2), self.bullets.append, "space_ship_40x40", self.user1
         )
 
         self.spaceship_two = Spaceship(
-            (self.width // -10, self.height // 5), self.bullets.append, "space_ship2_40x40"
+            (self.width // -10, self.height // 5), self.bullets.append, "space_ship2_40x40", self.user2
         )
 
         self.spaceship_three = Spaceship(
-            (self.width, self.height // -8), self.bullets.append, "space_ship3_40x40"
+            (self.width, self.height // -8), self.bullets.append, "space_ship3_40x40", self.user3
         )
-
-        self.scores = Scores(self.spaceship_one, "green")
 
         self.started = True
 
@@ -181,6 +196,36 @@ class SpaceRocks:
                     self.bullets.remove(bullet)
                     asteroid.split()
                     break
+            if self.spaceship_one and self.spaceship_one.collides_with(bullet):
+                self.spaceship_one.healthcheck_one(10)
+                print(self.spaceship_one.health_state_one)
+                self.message_healthcheck1 = "user {} (spaceship_one) health: {} ".format(self.spaceship_one.user.name,
+                                                                                         self.spaceship_one.
+                                                                                         health_state_one)
+
+                if self.spaceship_one.health_state_one == 0:
+                    self.message_healthcheck1 = "spaceship_one going to kill"
+
+            if self.spaceship_two and self.spaceship_two.collides_with(bullet):
+                self.spaceship_two.healthcheck_two(10)
+                print(self.spaceship_two.health_state_two)
+                self.message_healthcheck2 = "user {} (spaceship_two) health: {} ".format(self.spaceship_two.user.name,
+                                                                                         self.spaceship_two.
+                                                                                         health_state_two)
+
+                if self.spaceship_two.health_state_two == 0:
+                    message_healthcheck2 = "spaceship_two going to kill"
+
+            if self.spaceship_three and self.spaceship_three.collides_with(bullet):
+                self.spaceship_three.healthcheck_three(10)
+                print(self.spaceship_three.health_state_three)
+                self.message_healthcheck3 = "user {} (spaceship_three) health: {}".format(
+                    self.spaceship_three.user.name,
+                    self.spaceship_three.
+                    health_state_three)
+
+                if self.spaceship_three.health_state_three == 0:
+                    self.message_healthcheck3 = "spaceship_three going to kill"
 
         for bullet in self.bullets[:]:
             if not self.screen.get_rect().collidepoint(bullet.position):
@@ -206,6 +251,15 @@ class SpaceRocks:
 
         if self.message:
             print_text(self.screen, self.message, self.font)
+
+        if self.message_healthcheck1:
+            print_healthcheck1(self.screen, self.message_healthcheck1, pygame.font.Font(None, 30))
+
+        if self.message_healthcheck2:
+            print_healthcheck2(self.screen, self.message_healthcheck2, pygame.font.Font(None, 30))
+
+        if self.message_healthcheck3:
+            print_healthcheck3(self.screen, self.message_healthcheck3, pygame.font.Font(None, 30))
 
         pygame.display.flip()
         self.clock.tick(60)

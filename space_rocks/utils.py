@@ -70,3 +70,33 @@ def print_text(surface, text, font, color=Color("tomato")):
     rect.center = Vector2(surface.get_size()) / 2
 
     surface.blit(text_surface, rect)
+
+
+def print_healthcheck1(surface, text, font, color=Color("tomato")):
+    text_surface = font.render(text, 1, color, (255, 255, 255))
+
+    """rect = text_surface.get_rect()"""
+    """rect.center = Vector2(text_surface.get_rect.get()) / 10"""
+
+    """surface.blit(text_surface, rect)"""
+    surface.blit(text_surface, (375 - text_surface.get_width(), 10))
+
+
+def print_healthcheck2(surface, text, font, color=Color("tomato")):
+    text_surface = font.render(text, 1, color, (255, 255, 255))
+
+    """rect = text_surface.get_rect()
+    rect.center = Vector2(surface.get_size()) / 8
+
+    surface.blit(text_surface, rect)"""
+
+    surface.blit(text_surface, (385 - text_surface.get_width(), 40))
+
+
+def print_healthcheck3(surface, text, font, color=Color("tomato")):
+    text_surface = font.render(text, 1, color, (255, 255, 255))
+
+    """rect = text_surface.get_rect()
+    rect.center = Vector2(surface.get_size()) / 6"""
+
+    surface.blit(text_surface, (415 - text_surface.get_width(), 70))

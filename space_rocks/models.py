@@ -1,8 +1,8 @@
 from pygame.math import Vector2
 from pygame import transform
 from pygame import time
-
 import random
+from user import User
 from utils import get_random_velocity, load_sound, load_sprite, wrap_position, distance
 import math
 
@@ -12,7 +12,7 @@ UP = Vector2(0, -1)
 
 
 class GameObject:
-    def __init__(self, position, sprite, velocity):
+    def __init__(self, position, sprite, velocity, user):
         self.position = Vector2(position)
         self.sprite = sprite
         self.radius = sprite.get_width() / 2
@@ -35,15 +35,18 @@ class Spaceship(GameObject):
     MANEUVERABILITY = 3
     ACCELERATION = 0.25
     BULLET_SPEED = 100
+    health_state_one = 100
+    health_state_two = 100
+    health_state_three = 100
 
-    def __init__(self, position, bullet_callback=None, ship=None):
+    def __init__(self, position, bullet_callback=None, ship=None, user=None):
         self.bullet_callback = bullet_callback
         self.laser_sound = load_sound("laser")
         self.image = ship
         # Make a copy of the original UP vector
         self.direction = Vector2(UP)
-
-        super().__init__(position, load_sprite(ship), Vector2(0))
+        self.user = user
+        super().__init__(position, load_sprite(ship), Vector2(0), user)
 
     def __str__(self):
         """String version of this objects state"""
@@ -68,6 +71,15 @@ class Spaceship(GameObject):
             self.velocity = Vector2(velocity)
         else:
             self.velocity += self.direction * self.ACCELERATION
+
+    def healthcheck_one(self, health_state_one=100):
+        self.health_state_one = self.health_state_one - health_state_one
+
+    def healthcheck_two(self, health_state_two=100):
+        self.health_state_two = self.health_state_two - health_state_two
+
+    def healthcheck_three(self, health_state_three=100):
+        self.health_state_three = self.health_state_three - health_state_three
 
     def draw(self, surface):
         angle = self.direction.angle_to(UP)
@@ -194,7 +206,7 @@ class Asteroid(GameObject):
         scale = size_to_scale[size]
         sprite = transform.rotozoom(load_sprite("asteroid"), 0, scale)
 
-        super().__init__(position, sprite, get_random_velocity(0, 0))
+        super().__init__(position, sprite, get_random_velocity(0, 0), None)
 
     def split(self):
         if self.size > 1:
@@ -207,7 +219,7 @@ class Asteroid(GameObject):
 
 class Bullet(GameObject):
     def __init__(self, position, velocity):
-        super().__init__(position, load_sprite("bullet"), velocity)
+        super().__init__(position, load_sprite("bullet"), velocity, None)
 
     def move(self, surface):
         self.position = self.position + self.velocity
