@@ -38,6 +38,8 @@ class SpaceRocks:
         self.bullets = []
         self.users = []
 
+        self.spaceships = []
+
         self.user1 = User()
         self.user2 = User()
         self.user3 = User()
@@ -60,25 +62,32 @@ class SpaceRocks:
             (self.width, self.height // -8), self.bullets.append, "space_ship3_40x40", self.user3
         )
 
+        self.spaceships.append(self.spaceship_one)
+        self.spaceships.append(self.spaceship_two)
+        self.spaceships.append(self.spaceship_three)
+
+        print(self.spaceships[0])
+        print(self.spaceships[1])
+        print(self.spaceships[2])
         self.started = True
 
         for _ in range(10):
             while True:
                 position = get_random_position(self.screen)
                 if (
-                        position.distance_to(self.spaceship_one.position)
+                        position.distance_to(self.spaceships[0].position)
                         > self.MIN_ASTEROID_DISTANCE
                 ):
                     break
 
                 if (
-                        position.distance_to(self.spaceship_two.position)
+                        position.distance_to(self.spaceships[1].position)
                         > self.MIN_ASTEROID_DISTANCE
                 ):
                     break
 
                 if (
-                        position.distance_to(self.spaceship_three.position)
+                        position.distance_to(self.spaceships[2].position)
                         > self.MIN_ASTEROID_DISTANCE
                 ):
                     break
@@ -103,24 +112,24 @@ class SpaceRocks:
             ):
                 quit()
             if (
-                    self.spaceship_one
+                    len(self.spaceships) > 0 and self.spaceships[0]
                     and event.type == pygame.KEYDOWN
                     and event.key == pygame.K_SPACE
             ):
-                self.spaceship_one.shoot()
+                self.spaceships[0].shoot()
             if (
-                    self.spaceship_two
+                    len(self.spaceships) > 1 and self.spaceships[1]
                     and event.type == pygame.KEYDOWN
                     and event.key == pygame.K_f
             ):
-                self.spaceship_two.shoot()
+                self.spaceships[1].shoot()
 
             if (
-                    self.spaceship_three
+                    len(self.spaceships) > 2 and self.spaceships[2]
                     and event.type == pygame.KEYDOWN
                     and event.key == pygame.K_o
             ):
-                self.spaceship_three.shoot()
+                self.spaceships[2].shoot()
 
         is_key_pressed = pygame.key.get_pressed()
 
@@ -128,64 +137,64 @@ class SpaceRocks:
             if is_key_pressed[pygame.K_g]:
                 self.started = True
 
-        if self.spaceship_one:
+        if len(self.spaceships) > 0 and self.spaceships[0]:
             # print(f"velocity: {self.spaceship_one.velocity}")
             if is_key_pressed[pygame.K_RIGHT]:
-                self.spaceship_one.rotate(clockwise=True)
+                self.spaceships[0].rotate(clockwise=True)
             elif is_key_pressed[pygame.K_LEFT]:
-                self.spaceship_one.rotate(clockwise=False)
+                self.spaceships[0].rotate(clockwise=False)
             if is_key_pressed[pygame.K_UP]:
-                self.spaceship_one.accelerate()
+                self.spaceships[0].accelerate()
 
             if is_key_pressed[pygame.K_DOWN]:
-                self.spaceship_one.accelerate(0)
+                self.spaceships[0].accelerate(0)
 
-        if self.spaceship_two:
+        if len(self.spaceships) > 1 and self.spaceships[1]:
             # print(f"velocity: {self.spaceship_one.velocity}")
             if is_key_pressed[pygame.K_d]:
-                self.spaceship_two.rotate(clockwise=True)
+                self.spaceships[1].rotate(clockwise=True)
             elif is_key_pressed[pygame.K_a]:
-                self.spaceship_two.rotate(clockwise=False)
+                self.spaceships[1].rotate(clockwise=False)
             if is_key_pressed[pygame.K_w]:
-                self.spaceship_two.accelerate()
+                self.spaceships[1].accelerate()
 
             if is_key_pressed[pygame.K_s]:
-                self.spaceship_two.accelerate(0)
+                self.spaceships[1].accelerate(0)
 
-        if self.spaceship_three:
+        if len(self.spaceships) > 2 and self.spaceships[2]:
             # print(f"velocity: {self.spaceship_three.velocity}")
             if is_key_pressed[pygame.K_l]:
-                self.spaceship_three.rotate(clockwise=True)
+                self.spaceships[2].rotate(clockwise=True)
             elif is_key_pressed[pygame.K_j]:
-                self.spaceship_three.rotate(clockwise=False)
+                self.spaceships[2].rotate(clockwise=False)
             if is_key_pressed[pygame.K_i]:
-                self.spaceship_three.accelerate()
+                self.spaceships[2].accelerate()
 
             if is_key_pressed[pygame.K_k]:
-                self.spaceship_three.accelerate(0)
+                self.spaceships[2].accelerate(0)
 
     def _process_game_logic(self):
         for game_object in self._get_game_objects():
             game_object.move(self.screen)
 
-        if self.spaceship_one:
+        if len(self.spaceships) > 0 and self.spaceships[0]:
             for asteroid in self.asteroids:
-                if asteroid.collides_with(self.spaceship_one):
-                    self.spaceship_one = None
+                if asteroid.collides_with(self.spaceships[0]):
+                    self.spaceships[0] = None
                     self.message = "spaceship_one lost!"
                     break
 
-        if self.spaceship_two:
+        if len(self.spaceships) > 1 and self.spaceships[1]:
             for asteroid in self.asteroids:
-                if asteroid.collides_with(self.spaceship_two):
-                    self.spaceship_two = None
+                if asteroid.collides_with(self.spaceships[1]):
+                    self.spaceships[1] = None
                     self.message = "spaceship_two lost!"
                     break
 
-        if self.spaceship_three:
+        if len(self.spaceships) > 2 and self.spaceships[2]:
             for asteroid in self.asteroids:
-                if asteroid.collides_with(self.spaceship_three):
-                    self.spaceship_three = None
+                if asteroid.collides_with(self.spaceships[2]):
+                    self.spaceships[2] = None
                     self.message = "spaceship_three lost!"
                     break
 
@@ -196,48 +205,51 @@ class SpaceRocks:
                     self.bullets.remove(bullet)
                     asteroid.split()
                     break
-            if self.spaceship_one and self.spaceship_one.collides_with(bullet):
-                self.spaceship_one.healthcheck_one(10)
-                print(self.spaceship_one.health_state_one)
-                self.message_healthcheck1 = "user {} (spaceship_one) health: {} ".format(self.spaceship_one.user.name,
-                                                                                         self.spaceship_one.
+            if len(self.spaceships) > 0 and self.spaceships[0] and self.spaceships[0].collides_with(bullet):
+                self.spaceships[0].healthcheck_one(10)
+                print(self.spaceships[0].health_state_one)
+                self.message_healthcheck1 = "user {} (spaceship_one) health: {} ".format(self.spaceships[0].user.name,
+                                                                                         self.spaceships[0].
                                                                                          health_state_one)
 
-                if self.spaceship_one.health_state_one == 0:
-                    self.message_healthcheck1 = "spaceship_one going to kill"
+                if self.spaceships[0].health_state_one == 0:
+                    self.message_healthcheck1 = "spaceship_one is destroyed"
+                    self.spaceships.remove(self.spaceships[0])
 
-            if self.spaceship_two and self.spaceship_two.collides_with(bullet):
-                self.spaceship_two.healthcheck_two(10)
-                print(self.spaceship_two.health_state_two)
-                self.message_healthcheck2 = "user {} (spaceship_two) health: {} ".format(self.spaceship_two.user.name,
-                                                                                         self.spaceship_two.
+            if len(self.spaceships) > 1 and self.spaceships[1] and self.spaceships[1].collides_with(bullet):
+                self.spaceships[1].healthcheck_two(10)
+                print(self.spaceships[1].health_state_two)
+                self.message_healthcheck2 = "user {} (spaceship_two) health: {} ".format(self.spaceships[1].user.name,
+                                                                                         self.spaceships[1].
                                                                                          health_state_two)
 
-                if self.spaceship_two.health_state_two == 0:
-                    message_healthcheck2 = "spaceship_two going to kill"
+                if self.spaceships[1].health_state_two == 0:
+                    self.message_healthcheck2 = "spaceship_two is destroyed"
+                    self.spaceships.remove(self.spaceships[1])
 
-            if self.spaceship_three and self.spaceship_three.collides_with(bullet):
-                self.spaceship_three.healthcheck_three(10)
-                print(self.spaceship_three.health_state_three)
+            if len(self.spaceships) > 2 and self.spaceships[2] and self.spaceships[2].collides_with(bullet):
+                self.spaceships[2].healthcheck_three(10)
+                print(self.spaceships[2].health_state_three)
                 self.message_healthcheck3 = "user {} (spaceship_three) health: {}".format(
-                    self.spaceship_three.user.name,
-                    self.spaceship_three.
+                    self.spaceships[2].user.name,
+                    self.spaceships[2].
                     health_state_three)
 
-                if self.spaceship_three.health_state_three == 0:
-                    self.message_healthcheck3 = "spaceship_three going to kill"
+                if self.spaceships[2].health_state_three == 0:
+                    self.message_healthcheck3 = "spaceship_three is destroyed"
+                    self.spaceships.remove(self.spaceships[2])
 
         for bullet in self.bullets[:]:
             if not self.screen.get_rect().collidepoint(bullet.position):
                 self.bullets.remove(bullet)
 
-        if not self.asteroids and self.spaceship_one:
+        if not self.asteroids and self.spaceships[0]:
             self.message = "spaceship_one won!"
 
-        if not self.asteroids and self.spaceship_two:
+        if not self.asteroids and self.spaceships[1]:
             self.message = "spaceship_two won!"
 
-        if not self.asteroids and self.spaceship_three:
+        if not self.asteroids and self.spaceships[2]:
             self.message = "spaceship_three won!"
 
     def _draw(self):
@@ -267,13 +279,14 @@ class SpaceRocks:
     def _get_game_objects(self):
         game_objects = [*self.asteroids, *self.bullets]
 
-        if self.spaceship_one:
-            game_objects.append(self.spaceship_one)
+        if len(self.spaceships) > 0 and self.spaceships[0]:
+            game_objects.append(self.spaceships[0])
 
-        if self.spaceship_two:
-            game_objects.append(self.spaceship_two)
-
-        if self.spaceship_three:
-            game_objects.append(self.spaceship_three)
+        if len(self.spaceships) > 1 and self.spaceships[1]:
+            game_objects.append(self.spaceships[1])
+        print("size of the spaceships    ")
+        print(len(self.spaceships))
+        if len(self.spaceships) > 2 and self.spaceships[2]:
+            game_objects.append(self.spaceships[2])
 
         return game_objects
